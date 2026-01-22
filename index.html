@@ -3,93 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เช็คสถานะงานซ่อม - Minetech Service</title>
+    <title>Minetech Phuket - บริการเช็คสถานะงานซ่อมออนไลน์</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 450px; text-align: center; }
-        .logo { color: #1a73e8; font-size: 3rem; margin-bottom: 1rem; }
-        h2 { color: #333; margin-bottom: 1.5rem; }
-        .status-box { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; text-align: left; background: #fafafa; border: 1px solid #eee; }
-        .status-tag { display: inline-block; padding: 5px 15px; border-radius: 20px; color: white; font-weight: bold; margin-bottom: 10px; }
-        .pending { background-color: #ff9800; }
-        .fixing { background-color: #2196f3; }
-        .done { background-color: #4caf50; }
-        .cancel { background-color: #f44336; }
-        .info-row { margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
-        .label { color: #888; font-size: 0.9rem; }
-        .value { color: #333; font-weight: bold; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold; }
+        :root {
+            --primary-color: #1a73e8;
+            --success-color: #28a745;
+            --warning-color: #f39c12;
+            --danger-color: #d32f2f;
+            --bg-color: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .logo-area {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        h2 { margin: 0; font-weight: 600; font-size: 1.5rem; }
+        p.subtitle { margin: 5px 0 0; font-weight: 300; opacity: 0.9; }
+
+        .search-area { padding: 25px; background: #fff; }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Kanit', sans-serif;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 8px rgba(26, 115, 232, 0.2);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-family: 'Kanit', sans-serif;
+        }
+
         button:hover { background: #1557b0; }
+
+        .result-card {
+            margin: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border: 1px solid #edf2f7;
+            display: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .label { color: #718096; font-size: 0.9rem; }
+        .value { color: #2d3748; font-weight: 600; text-align: right; }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #a0aec0;
+            background: #fafafa;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Status Colors */
+        .pending { background: var(--warning-color); }
+        .fixing { background: var(--primary-color); }
+        .done { background: var(--success-color); }
+        .cancel { background: var(--danger-color); }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="logo"><i class="fas fa-tools"></i></div>
-    <h2>Minetech Service</h2>
-    <p>กรุณาใส่เลขที่ใบงานเพื่อเช็คสถานะ</p>
-    
-    <input type="text" id="jobInput" placeholder="ตัวอย่าง: JS-260117-XXXX">
-    <button onclick="checkStatus()">ตรวจสอบสถานะ</button>
-
-    <div id="resultBox" class="status-box">
-        <div id="statusTag" class="status-tag"></div>
-        <div class="info-row"><span class="label">เลขที่งาน:</span> <span id="resJob" class="value"></span></div>
-        <div class="info-row"><span class="label">ชื่อลูกค้า:</span> <span id="resName" class="value"></span></div>
-        <div class="info-row"><span class="label">รุ่นอุปกรณ์:</span> <span id="resModel" class="value"></span></div>
-        <div class="info-row"><span class="label">อาการเสีย:</span> <span id="resProblem" class="value"></span></div>
-        <div class="info-row"><span class="label">อัปเดตล่าสุด:</span> <span id="resDate" class="value"></span></div>
+<div class="container">
+    <div class="header">
+        <div class="logo-area">
+            <i class="fas fa-microchip"></i>
+        </div>
+        <h2>Minetech Phuket</h2>
+        <p class="subtitle">ไอทีโซลูชั่น รับดูแลระบบคอมพิวเตอร์</p>
     </div>
-    <p id="errorMsg" style="color: red; display: none; margin-top: 15px;">ไม่พบข้อมูลใบงานนี้</p>
+
+    <div class="search-area">
+        <div class="input-group">
+            <i class="fas fa-search input-icon"></i>
+            <input type="text" id="jobInput" placeholder="ใส่เลขใบงาน (e.g. JS-XXXX)">
+        </div>
+        <button onclick="checkStatus()">
+            <i class="fas fa-paper-plane"></i> ตรวจสอบสถานะ
+        </button>
+    </div>
+
+    <div id="resultCard" class="result-card">
+        <div id="statusBadge" class="status-badge"></div>
+        
+        <div class="data-row">
+            <span class="label">หมายเลขงาน</span>
+            <span id="resJob" class="value"></span>
+        </div>
+        <div class="data-row">
+            <span class="label">ชื่อลูกค้า</span>
+            <span id="resName" class="value"></span>
+        </div>
+        <div class="data-row">
+            <span class="label">อุปกรณ์</span>
+            <span id="resModel" class="value"></span>
+        </div>
+        <div class="data-row">
+            <span class="label">ราคาประมาณการ</span>
+            <span id="resPrice" class="value"></span>
+        </div>
+        <div class="data-row" style="border:none">
+            <span class="label">อัปเดตล่าสุด</span>
+            <span id="resDate" class="value"></span>
+        </div>
+    </div>
+
+    <div id="errorMsg" style="display:none; color:var(--danger-color); text-align:center; padding: 20px; font-weight: bold;">
+        <i class="fas fa-exclamation-circle"></i> ไม่พบข้อมูลใบงานนี้ กรุณาตรวจสอบอีกครั้ง
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Minetech Phuket IT Solutions<br>
+        ภูเก็ต - รับซ่อมคอมพิวเตอร์และดูแลระบบครบวงจร
+    </div>
 </div>
 
 <script>
-    // ดึงค่าเลขงานจาก URL (ถ้ามีสแกนมา)
-    const urlParams = new URLSearchParams(window.location.search);
-    const jobFromUrl = urlParams.get('job');
-    if(jobFromUrl) {
-        document.getElementById('jobInput').value = jobFromUrl;
-        checkStatus();
-    }
+    // ตรวจสอบค่าจาก URL อัตโนมัติ (กรณีสแกน QR)
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const job = urlParams.get('job');
+        if (job) {
+            document.getElementById('jobInput').value = job;
+            checkStatus();
+        }
+    };
 
     async function checkStatus() {
         const jobId = document.getElementById('jobInput').value.trim();
-        const resBox = document.getElementById('resultBox');
-        const errorMsg = document.getElementById('errorMsg');
+        const card = document.getElementById('resultCard');
+        const error = document.getElementById('errorMsg');
         
         if(!jobId) return;
 
         try {
-            // URL ของ Firebase Realtime Database ของคุณ
             const response = await fetch(`https://minetechtrack-583f9-default-rtdb.firebaseio.com/jobs/${jobId}.json`);
             const data = await response.json();
 
             if(data) {
-                resBox.style.display = 'block';
-                errorMsg.style.display = 'none';
+                card.style.display = 'block';
+                error.style.display = 'none';
                 
                 document.getElementById('resJob').innerText = data.JobNumber;
                 document.getElementById('resName').innerText = data.CustomerName;
                 document.getElementById('resModel').innerText = data.DeviceModel;
-                document.getElementById('resProblem').innerText = data.Problem;
-                document.getElementById('resDate').innerText = data.UpdateDate || data.LastUpdate;
+                document.getElementById('resPrice').innerText = data.Price ? data.Price.toLocaleString() + ' บาท' : 'รอยืนยันราคา';
+                document.getElementById('resDate').innerText = data.UpdateDate;
+
+                const badge = document.getElementById('statusBadge');
+                if(data.Status === "Pending") { badge.innerText = "🕒 รอดำเนินการ"; badge.className = "status-badge pending"; }
+                else if(data.Status === "Fixing") { badge.innerText = "🔧 กำลังซ่อมแซม"; badge.className = "status-badge fixing"; }
+                else if(data.Status === "Done") { badge.innerText = "✅ ซ่อมเสร็จแล้ว"; badge.className = "status-badge done"; }
+                else { badge.innerText = "❌ ยกเลิก"; badge.className = "status-badge cancel"; }
                 
-                const tag = document.getElementById('statusTag');
-                if(data.Status === 'Pending') { tag.innerText = '🕒 รอซ่อม'; tag.className = 'status-tag pending'; }
-                else if(data.Status === 'Fixing') { tag.innerText = '🔧 กำลังซ่อม'; tag.className = 'status-tag fixing'; }
-                else if(data.Status === 'Done') { tag.innerText = '✅ ซ่อมเสร็จแล้ว'; tag.className = 'status-tag done'; }
-                else if(data.Status === 'Cancel') { tag.innerText = '❌ ยกเลิก'; tag.className = 'status-tag cancel'; }
             } else {
-                resBox.style.display = 'none';
-                errorMsg.style.display = 'block';
+                card.style.display = 'none';
+                error.style.display = 'block';
             }
         } catch (err) {
-            alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+            alert('ไม่สามารถเชื่อมต่อฐานข้อมูลได้');
         }
     }
 </script>
-
 </body>
 </html>
